@@ -2,13 +2,22 @@ package ru.netology.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.netology.domain.MovieItem;
+import ru.netology.repository.AfishaRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-class MovieManagerTest {
-
-    private MovieManager manager = new MovieManager();
+@ExtendWith(MockitoExtension.class)
+class AfishaManagerTest {
+    @Mock
+    private AfishaRepository repository;
+    @InjectMocks
+    private AfishaManager manager;
     MovieItem first = new MovieItem(1, 10, "Tears in the night", "drama", 20200820);
     MovieItem second = new MovieItem(2, 20, "Snickering killer", "comedy", 20200828);
     MovieItem third = new MovieItem(3, 30, "Notsnickering keller", "horror", 20200828);
@@ -39,19 +48,25 @@ class MovieManagerTest {
     @Test
     public void shouldGetLastTen() {
         manager.setMoviesNumberAtDefault(manager.getMoviesNumberAtDefault());
+        MovieItem[] returned = new MovieItem[]{second, third, forth, fifth, sixth, seventh, eighths, ninth, tenth, eleventh};
+        doReturn(returned).when(repository).findAll();
+
         MovieItem[] actual = manager.getLastTenOrLess();
         MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second};
         assertArrayEquals(expected, actual);
     }
 
     @Test
-    void getDefault() {
+    public void getDefault() {
         assertEquals(10, manager.getMoviesNumberAtDefault());
     }
 
     @Test
-    void shouldGetMoviesAsSet() {
+    public void shouldGetMoviesAsSet() {
         manager.setMoviesNumberAtDefault(20);
+        MovieItem[] returned = new MovieItem[]{first, second, third, forth, fifth, sixth, seventh, eighths, ninth, tenth, eleventh};
+        doReturn(returned).when(repository).findAll();
+
         MovieItem[] actual = manager.getLastTenOrLess();
         MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second, first};
         assertArrayEquals(expected, actual);
@@ -60,20 +75,30 @@ class MovieManagerTest {
     @Test
     public void shouldRemoveIfExists() {
         int idToRemove = 3;
+        MovieItem[] returned = new MovieItem[]{first, second, forth, fifth, sixth, seventh, eighths, ninth, tenth, eleventh};
+        doReturn(returned).when(repository).findAll();
+        doNothing().when(repository).removeById(idToRemove);
+
         manager.removeById(idToRemove);
-        MovieItem[] actual = manager.getAllReverse();
         MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, second, first};
+        MovieItem[] actual = manager.getAllReverse();
         assertArrayEquals(expected, actual);
+
+        verify(repository).removeById(idToRemove);
     }
 
     @Test
     public void shouldNotRemoveIfNotExists() {
-
         int idToRemove = 14;
+        MovieItem[] returned = new MovieItem[]{first, second, third, forth, fifth, sixth, seventh, eighths, ninth, tenth, eleventh};
+        doReturn(returned).when(repository).findAll();
+        doNothing().when(repository).removeById(idToRemove);
+
         manager.removeById(idToRemove);
-        MovieItem[] actual = manager.getAllReverse();
         MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second, first};
+        MovieItem[] actual = manager.getAllReverse();
         assertArrayEquals(expected, actual);
+        verify(repository).removeById(idToRemove);
     }
 
 }
