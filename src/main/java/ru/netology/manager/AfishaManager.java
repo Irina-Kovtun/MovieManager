@@ -7,12 +7,19 @@ import ru.netology.repository.AfishaRepository;
 @Data
 public class AfishaManager {
     private AfishaRepository repository;
+    private int moviesNumberAtDefault = 10;
 
-    public AfishaManager(AfishaRepository repository) {
+    public AfishaManager(int moviesNumberAtDefault, AfishaRepository repository) {
+        this.moviesNumberAtDefault = moviesNumberAtDefault;
         this.repository = repository;
     }
 
-    int moviesNumberAtDefault = 10;
+    public AfishaManager() {
+    }
+//
+//    public AfishaManager(AfishaRepository repository) {
+//        this.repository = repository;
+//    }
 
     public void add(MovieItem movie) {
         repository.save(movie);
