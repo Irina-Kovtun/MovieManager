@@ -50,10 +50,9 @@ public class AfishaRepository {
         }
     }
 
-    public MovieItem[] removeAll() {
+    public void removeAll() {
         MovieItem[] zero = new MovieItem[0];
         movies = zero;
-        return movies;
     }
 }
 

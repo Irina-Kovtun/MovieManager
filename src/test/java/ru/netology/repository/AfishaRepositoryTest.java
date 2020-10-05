@@ -81,7 +81,8 @@ class AfishaRepositoryTest {
     @Test
     void shouldRemoveAll() {
         MovieItem[] expected = new MovieItem[0];
-        MovieItem[] actual = repository.removeAll();
+        repository.removeAll();
+        MovieItem[] actual = repository.findAll();
         assertArrayEquals(expected, actual);
     }
 }
