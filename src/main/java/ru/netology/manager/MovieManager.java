@@ -5,7 +5,10 @@ import ru.netology.domain.MovieItem;
 
 public class MovieManager {
     private MovieItem[] movies = new MovieItem[0];
-    int moviesNumberAtDefault = 10;
+    private int moviesNumberAtDefault = 10;
+
+    public MovieManager(int moviesNumberAtDefault) {this.moviesNumberAtDefault = moviesNumberAtDefault; }
+    public MovieManager() { }
 
     public int getMoviesNumberAtDefault() {
         return moviesNumberAtDefault;
