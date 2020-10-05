@@ -32,12 +32,30 @@ class MovieManagerTest {
         manager.add(seventh);
         manager.add(eighths);
         manager.add(ninth);
-        manager.add(tenth);
-        manager.add(eleventh);
+//        manager.add(tenth);
+//        manager.add(eleventh);
     }
 
     @Test
-    public void shouldGetLastTen() {
+    public void shouldGetLessThanDefault() {
+        manager.setMoviesNumberAtDefault(manager.getMoviesNumberAtDefault());
+        MovieItem[] actual = manager.getLastTenOrLess();
+        MovieItem[] expected = new MovieItem[]{ninth, eighths, seventh, sixth, fifth, forth, third, second, first};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldGetDefault() {
+        manager.add(tenth);
+        MovieItem[] actual = manager.getLastTenOrLess();
+        MovieItem[] expected = new MovieItem[]{ tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second, first};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldGetMoreThanDefault() {
+        manager.add(tenth);
+        manager.add(eleventh);
         manager.setMoviesNumberAtDefault(manager.getMoviesNumberAtDefault());
         MovieItem[] actual = manager.getLastTenOrLess();
         MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second};
@@ -45,20 +63,9 @@ class MovieManagerTest {
     }
 
     @Test
-    void getDefault() {
-        assertEquals(10, manager.getMoviesNumberAtDefault());
-    }
-
-    @Test
-    void shouldGetMoviesAsSet() {
-        manager.setMoviesNumberAtDefault(20);
-        MovieItem[] actual = manager.getLastTenOrLess();
-        MovieItem[] expected = new MovieItem[]{eleventh, tenth, ninth, eighths, seventh, sixth, fifth, forth, third, second, first};
-        assertArrayEquals(expected, actual);
-    }
-
-    @Test
     public void shouldRemoveIfExists() {
+        manager.add(tenth);
+        manager.add(eleventh);
         int idToRemove = 3;
         manager.removeById(idToRemove);
         MovieItem[] actual = manager.getAllReverse();
@@ -68,7 +75,8 @@ class MovieManagerTest {
 
     @Test
     public void shouldNotRemoveIfNotExists() {
-
+        manager.add(tenth);
+        manager.add(eleventh);
         int idToRemove = 14;
         manager.removeById(idToRemove);
         MovieItem[] actual = manager.getAllReverse();
